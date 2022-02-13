@@ -48,15 +48,16 @@
                         Width="150"
                         Margin="5 20 0 0"
                         Content="Регистрация"
-                        Style="{StaticResource MaterialDesignOutlinedButton}" />
+                        Command="{Binding ViewRegisterCommand}"
+                        Style="{StaticResource MaterialDesignOutlinedButton}" Cursor="Hand" />
                     <Button 
                         Grid.Column="1"
                         Width="150"
                         Margin="15 20 0 0"
                         Content="Вход"
+                        Command="{Binding LoginCommand}"
                         Style="{StaticResource MaterialDesignRaisedDarkButton}" />
                 </Grid>
-                
             </Grid>
         </Grid>
     </Border>

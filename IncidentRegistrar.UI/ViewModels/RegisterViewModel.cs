@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 
 using IncidentRegistrar.UI.Commands;
+using IncidentRegistrar.UI.Services;
 using IncidentRegistrar.UI.State;
 
 namespace IncidentRegistrar.UI.ViewModels
@@ -77,9 +78,9 @@ namespace IncidentRegistrar.UI.ViewModels
 
 		#endregion Commands
 
-		public RegisterViewModel(IRenavigator registerRenavigator, IRenavigator loginRenavigator)
+		public RegisterViewModel(IRenavigator registerRenavigator, IRenavigator loginRenavigator, IAuthenticationService authenticationService)
 		{
-			RegisterCommand = new RegisterCommand(this, registerRenavigator);
+			RegisterCommand = new RegisterCommand(this, registerRenavigator, authenticationService);
 			ViewLoginCommand = new RenavigateCommand(loginRenavigator);
 		}
 	}

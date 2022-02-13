@@ -3,10 +3,182 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:IncidentRegistrar.UI.Views"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <TextBlock Text="Home" />
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Style="{StaticResource MaterialDesignHeadline4TextBlock}" Text="Все происшествия"/>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <TextBox Width="200" materialDesign:HintAssist.Hint="Поиск по фамилии участника" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding Filter}"/>
+        </StackPanel>
+        <DataGrid
+            Grid.Row="2"
+            Margin="0 10 0 0"
+            ItemsSource="{Binding Incidents, UpdateSourceTrigger=PropertyChanged}"
+            CanUserAddRows="False"
+            AutoGenerateColumns="False"
+            AllowDrop="False"
+            IsReadOnly="True"
+            HeadersVisibility="All"
+            MaxHeight="300">
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    Width="50"
+                    Binding="{Binding Id}"
+                    Header="№"
+                    ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />
+                <materialDesign:DataGridTextColumn
+                    Width="100"
+                    Header="Дата"
+                    ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}"
+                    Binding="{Binding RegDate, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:dd.MM.yyyy}}"/>
+                <DataGridTextColumn
+                    Header="Участники"
+                    ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                    Binding="{Binding Participants, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn
+                    Width="150"
+                    Header="Тип происшествия"
+                    ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                    Binding="{Binding IncidentType, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn
+                    Header="Тип резолюции"
+                    Width="auto"
+                    ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
+                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                    Binding="{Binding ResolutionType, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button
+                                Width="30"
+                                Height="30"
+                                Command="{Binding DeleteIncidentCommand}"
+                                CommandParameter="{Binding Id}"
+                                Style="{StaticResource MaterialDesignIconButton}"
+                                Background="{DynamicResource MaterialDesignTextFieldBoxBackground}">
+                                <materialDesign:PackIcon Kind="Delete" Height="20" Width="20"/>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Grid Grid.Row="3" Margin="0 10 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <GroupBox Style="{x:Null}" Grid.Column="0" Header="Новое происшествие" DataContext="{Binding NewIncident}">
+                <Grid Margin="10 0 10 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                        <DatePicker SelectedDate="{Binding RegDate}" Width="100" VerticalAlignment="Bottom" Grid.Column="0" materialDesign:HintAssist.Hint="Дата" />
+                        <ComboBox ItemsSource="{Binding IncidentTypes}" SelectedItem="{Binding IncidentType}" VerticalAlignment="Top" Margin="10 0 0 0" Grid.Column="1" materialDesign:HintAssist.Hint="Тип происшествия" Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+                        <ComboBox ItemsSource="{Binding ResolutionTypes}" SelectedItem="{Binding ResolutionType}" VerticalAlignment="Top" Margin="10 0 0 0" Grid.Column="2" materialDesign:HintAssist.Hint="Тип резолюции" Style="{StaticResource MaterialDesignFloatingHintComboBox}" />
+                    </Grid>
+                    <ItemsControl Grid.Row="1"  Margin="0 10 0 10" ItemsSource="{Binding Participants}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderThickness="1" BorderBrush="Olive" Margin="0 10 0 0">
+                                    <Grid Margin="5">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Text="{Binding PersonType, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold"/>
+                                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                            <TextBlock Text="ФИО: " FontWeight="Medium" />
+                                            <TextBlock Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}" />
+                                            <TextBlock Margin="5 0 0 0" Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"/>
+                                            <TextBlock Margin="5 0 0 0" Text="{Binding MiddleName, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                                            <TextBlock Text="Зарегистрирован(а) по адресу: " FontWeight="Medium"/>
+                                            <TextBlock Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="3" Orientation="Horizontal">
+                                            <TextBlock Text="Количество судимостей: " FontWeight="Medium"/>
+                                            <TextBlock Text="{Binding ConvictionsCount, UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button Margin="0 0 0 10" Grid.Row="2" Content="Сохранить происшествие" Command="{Binding CreateIncidentCommand}" Cursor="Hand"/>
+                </Grid>
+            </GroupBox>
+            <GroupBox Header="Новый участник" Style="{x:Null}" Grid.Column="1" Margin="15 0 0 0">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" DataContext="{Binding CurrentParticipant}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}"  VerticalAlignment="Center" Grid.Row="0" Style="{StaticResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Фамилия"/>
+                        <TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Grid.Row="1" Style="{StaticResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Имя"/>
+                        <TextBox Text="{Binding MiddleName, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Grid.Row="2" Style="{StaticResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Отчество"/>
+                        <TextBox Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Grid.Row="3" Style="{StaticResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Адрес"/>
+                        <TextBox Text="{Binding ConvictionsCount, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Grid.Row="4" Style="{StaticResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Количество судимостей" Cursor="IBeam"/>
+                        <ComboBox Grid.Row="5" SelectedItem="{Binding SelectedPersonType}" ItemsSource="{Binding PersonTypes}" materialDesign:HintAssist.Hint="Тип участника" Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+                    </Grid>
+                    <Button Command="{Binding AddParticipantCommand}" Grid.Row="1" Margin="0 20 0 0" Content="Добавить участника" Width="200" HorizontalAlignment="Left" Cursor="Hand"/>
+                </Grid>
+            </GroupBox>
+        </Grid>
+        <Grid
+            Grid.Row="4"
+            VerticalAlignment="Bottom"
+            DataContext="{Binding ErrorMessageViewModel}"
+            Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <materialDesign:PackIcon
+                Grid.Column="0"
+                Foreground="DarkRed"
+                VerticalAlignment="Center"
+                Kind="Error"
+                Width="15"
+                Height="15"/>
+            <TextBlock
+                TextWrapping="Wrap"
+                Grid.Column="1"
+                Foreground="DarkRed"
+                VerticalAlignment="Center"
+                Text="{Binding Message}"/>
+        </Grid>
     </Grid>
 </UserControl>

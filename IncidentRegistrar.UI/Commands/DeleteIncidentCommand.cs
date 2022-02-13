@@ -8,12 +8,12 @@ namespace IncidentRegistrar.UI.Commands
 {
 	public class DeleteIncidentCommand : AsyncCommandBase
 	{
-		private readonly MainViewModel _mainViewModel;
+		private readonly HomeViewModel _homeViewModel;
 		private readonly IIncidentRepository _incidentRepository;
 
-		public DeleteIncidentCommand(MainViewModel mainViewModel, IIncidentRepository incidentRepository)
+		public DeleteIncidentCommand(HomeViewModel homeViewModel, IIncidentRepository incidentRepository)
 		{
-			_mainViewModel = mainViewModel;
+			_homeViewModel = homeViewModel;
 			_incidentRepository = incidentRepository;
 		}
 
@@ -24,12 +24,12 @@ namespace IncidentRegistrar.UI.Commands
 				var id = int.Parse(parameter.ToString());
 				await _incidentRepository.Delete(id);
 
-				var incidentToRemove = _mainViewModel.Incidents.FirstOrDefault(incident => incident.Id == id);
-				_mainViewModel.Incidents.Remove(incidentToRemove);
+				var incidentToRemove = _homeViewModel.Incidents.FirstOrDefault(incident => incident.Id == id);
+				_homeViewModel.Incidents.Remove(incidentToRemove);
 			}
 			catch
 			{
-				_mainViewModel.ErrorMessage = "Не удалось удалить происшествие";
+				_homeViewModel.ErrorMessage = "Не удалось удалить происшествие";
 			}
 		}
 	}

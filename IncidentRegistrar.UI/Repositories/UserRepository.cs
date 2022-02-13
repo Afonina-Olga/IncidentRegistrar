@@ -15,12 +15,20 @@ namespace IncidentRegistrar.UI.Repositories
 			_contextFactory = contextFactory;
 		}
 
-		public async Task<bool> IsValid(string login, string password)
+		public async Task<User> Get(string login, string password)
 		{
 			using var context = _contextFactory.CreateDbContext();
 			var user = await context.Users.FirstOrDefaultAsync(
 				user => user.Login == login && user.Password == password);
-			return user != null;
+			return user;
+		}
+
+		public async Task<User> Get(string login)
+		{
+			using var context = _contextFactory.CreateDbContext();
+			var user = await context.Users
+				.FirstOrDefaultAsync(user => user.Login == login);
+			return user;
 		}
 	}
 }

@@ -22,9 +22,9 @@ namespace IncidentRegistrar.UI.ViewModels
 
 		public ICommand DeleteIncidentCommand { get; }
 
-		public IncidentViewModel(MainViewModel mainViewModel, IIncidentRepository incidentRepository)
+		public IncidentViewModel(HomeViewModel homeViewModel, IIncidentRepository incidentRepository)
 		{
-			DeleteIncidentCommand = new DeleteIncidentCommand(mainViewModel, incidentRepository);
+			DeleteIncidentCommand = new DeleteIncidentCommand(homeViewModel, incidentRepository);
 		}
 	}
 }

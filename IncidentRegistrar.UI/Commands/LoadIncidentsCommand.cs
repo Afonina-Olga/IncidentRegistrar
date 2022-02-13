@@ -12,11 +12,11 @@ namespace IncidentRegistrar.UI.Commands
 	public class LoadIncidentsCommand : AsyncCommandBase
 	{
 		private readonly IIncidentRepository _incidentRepository;
-		private readonly MainViewModel _mainViewModel;
+		private readonly HomeViewModel _homeViewModel;
 
-		public LoadIncidentsCommand(MainViewModel mainViewModel, IIncidentRepository incidentRepository)
+		public LoadIncidentsCommand(HomeViewModel homeViewModel, IIncidentRepository incidentRepository)
 		{
-			_mainViewModel = mainViewModel;
+			_homeViewModel = homeViewModel;
 			_incidentRepository = incidentRepository;
 		}
 
@@ -25,9 +25,9 @@ namespace IncidentRegistrar.UI.Commands
 			try
 			{
 				var incidents = await _incidentRepository.Get();
-				_mainViewModel.Incidents = new ObservableCollection<IncidentViewModel>(
+				_homeViewModel.Incidents = new ObservableCollection<IncidentViewModel>(
 					incidents
-						.Select(incident => new IncidentViewModel(_mainViewModel, _incidentRepository)
+						.Select(incident => new IncidentViewModel(_homeViewModel, _incidentRepository)
 						{
 							Id = incident.Id,
 							IncidentType = incident.IncidentType.FromIncidentType(),
@@ -38,7 +38,7 @@ namespace IncidentRegistrar.UI.Commands
 			}
 			catch
 			{
-				_mainViewModel.ErrorMessage = "Ошибка загрузки данных о происшествиях";
+				_homeViewModel.ErrorMessage = "Ошибка загрузки данных о происшествиях";
 			}
 		}
 	}

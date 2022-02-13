@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -7,7 +8,7 @@ using IncidentRegistrar.UI.ViewModels;
 using IncidentRegistrar.UI.Repositories;
 using IncidentRegistrar.UI.State;
 using IncidentRegistrar.UI.ViewModels.Factories;
-using System;
+using IncidentRegistrar.UI.Services;
 
 namespace IncidentRegistrar.UI
 {
@@ -34,8 +35,10 @@ namespace IncidentRegistrar.UI
 					services.AddSingleton(typeof(IRepository<>), typeof(Repository<>));
 					services.AddSingleton<IIncidentRepository, IncidentRepository>();
 					services.AddSingleton<IUserRepository, UserRepository>();
+					services.AddSingleton<IAuthenticationService, AuthenticationService>();
 					services.AddSingleton<INavigator, Navigator>();
-					
+					services.AddSingleton<IUserStore, UserStore>();
+
 					services.AddTransient(CreateHomeViewModel);
 					services.AddTransient<MainViewModel>();
 
@@ -53,21 +56,24 @@ namespace IncidentRegistrar.UI
 
 		private static HomeViewModel CreateHomeViewModel(IServiceProvider services)
 		{
-			return new HomeViewModel();
+			return new HomeViewModel(services.GetRequiredService<IIncidentRepository>());
 		}
 
 		private static LoginViewModel CreateLoginViewModel(IServiceProvider services)
 		{
 			return new LoginViewModel(
 				services.GetRequiredService<ViewModelRenavigator<HomeViewModel>>(),
-				services.GetRequiredService<ViewModelRenavigator<RegisterViewModel>>());
+				services.GetRequiredService<ViewModelRenavigator<RegisterViewModel>>(),
+				services.GetRequiredService<IUserStore>(),
+				services.GetRequiredService<IAuthenticationService>());
 		}
 
 		private static RegisterViewModel CreateRegisterViewModel(IServiceProvider services)
 		{
 			return new RegisterViewModel(
 				services.GetRequiredService<ViewModelRenavigator<LoginViewModel>>(),
-				services.GetRequiredService<ViewModelRenavigator<LoginViewModel>>());
+				services.GetRequiredService<ViewModelRenavigator<LoginViewModel>>(),
+				services.GetRequiredService<IAuthenticationService>());
 		}
 
 		protected override void OnStartup(StartupEventArgs e)

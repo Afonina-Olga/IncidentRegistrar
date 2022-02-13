@@ -3,14 +3,16 @@ using System;
 using IncidentRegistrar.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IncidentRegistrar.UI.Migrations
 {
     [DbContext(typeof(IncidentRegistrarDbContext))]
-    partial class IncidentRegistrarDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220213133332_User")]
+    partial class User
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,8 +1,9 @@
-﻿using System;
+﻿using System.Windows;
 using System.Threading.Tasks;
 
 using IncidentRegistrar.UI.State;
 using IncidentRegistrar.UI.ViewModels;
+using IncidentRegistrar.UI.Services;
 
 namespace IncidentRegistrar.UI.Commands
 {
@@ -10,16 +11,43 @@ namespace IncidentRegistrar.UI.Commands
 	{
 		private readonly LoginViewModel _loginViewModel;
 		private readonly IRenavigator _renavigator;
+		private readonly IUserStore _userStore;
+		private readonly IAuthenticationService _authenticationService;
 
-		public LoginCommand(LoginViewModel loginViewModel, IRenavigator renavigator)
+		public LoginCommand(
+			LoginViewModel loginViewModel,
+			IRenavigator renavigator,
+			IUserStore userStore,
+			IAuthenticationService authenticationService)
 		{
 			_loginViewModel = loginViewModel;
 			_renavigator = renavigator;
+			_userStore = userStore;
+			_authenticationService = authenticationService;
 		}
 
-		public override Task ExecuteAsync(object parameter)
+		public override async Task ExecuteAsync(object parameter)
 		{
-			throw new NotImplementedException();
+			try
+			{
+				var login = _loginViewModel.Login.Trim();
+				var password = _loginViewModel.Password.Trim();
+
+				var user = await _authenticationService.Login(login, password);
+
+				if (user != null)
+				{
+					_renavigator.Renavigate();
+					_userStore.User = user;
+				}
+				
+				else
+					MessageBox.Show("Неверный логин или пароль");
+			}
+			catch
+			{
+				MessageBox.Show("Не удалось войти в систему");
+			}
 		}
 	}
 }

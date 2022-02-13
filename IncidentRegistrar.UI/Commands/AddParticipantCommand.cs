@@ -9,11 +9,11 @@ namespace IncidentRegistrar.UI.Commands
 {
 	public class AddParticipantCommand : ICommand
 	{
-		private readonly MainViewModel _mainViewModel;
+		private readonly HomeViewModel _homeViewModel;
 
-		public AddParticipantCommand(MainViewModel mainViewModel)
+		public AddParticipantCommand(HomeViewModel homeViewModel)
 		{
-			_mainViewModel = mainViewModel;
+			_homeViewModel = homeViewModel;
 		}
 
 		public event EventHandler CanExecuteChanged;
@@ -33,19 +33,19 @@ namespace IncidentRegistrar.UI.Commands
 				else if (ParticipantExists())
 					MessageBox.Show("Нельзя добавить участника дважды");
 				else
-					_mainViewModel.NewIncident.Participants.Add(
+					_homeViewModel.NewIncident.Participants.Add(
 						new ParticipantViewModel()
 						{
-							Address = _mainViewModel.CurrentParticipant.Address,
-							LastName = _mainViewModel.CurrentParticipant.LastName,
-							FirstName = _mainViewModel.CurrentParticipant.FirstName,
-							MiddleName = _mainViewModel.CurrentParticipant.MiddleName,
-							PersonType = _mainViewModel.CurrentParticipant.SelectedPersonType
+							Address = _homeViewModel.CurrentParticipant.Address,
+							LastName = _homeViewModel.CurrentParticipant.LastName,
+							FirstName = _homeViewModel.CurrentParticipant.FirstName,
+							MiddleName = _homeViewModel.CurrentParticipant.MiddleName,
+							PersonType = _homeViewModel.CurrentParticipant.SelectedPersonType
 						});
 			}
 			catch
 			{
-				_mainViewModel.ErrorMessage = "Не удалось добавить участника";
+				_homeViewModel.ErrorMessage = "Не удалось добавить участника";
 			}
 		}
 
@@ -55,11 +55,11 @@ namespace IncidentRegistrar.UI.Commands
 		public bool CanAdd()
 		{
 			return
-				!string.IsNullOrEmpty(_mainViewModel.CurrentParticipant.LastName) &&
-				!string.IsNullOrEmpty(_mainViewModel.CurrentParticipant.FirstName) &&
-				!string.IsNullOrEmpty(_mainViewModel.CurrentParticipant.MiddleName) &&
-				!string.IsNullOrEmpty(_mainViewModel.CurrentParticipant.Address) &&
-				!string.IsNullOrEmpty(_mainViewModel.CurrentParticipant.SelectedPersonType);
+				!string.IsNullOrEmpty(_homeViewModel.CurrentParticipant.LastName) &&
+				!string.IsNullOrEmpty(_homeViewModel.CurrentParticipant.FirstName) &&
+				!string.IsNullOrEmpty(_homeViewModel.CurrentParticipant.MiddleName) &&
+				!string.IsNullOrEmpty(_homeViewModel.CurrentParticipant.Address) &&
+				!string.IsNullOrEmpty(_homeViewModel.CurrentParticipant.SelectedPersonType);
 		}
 
 		/// <summary>
@@ -68,11 +68,11 @@ namespace IncidentRegistrar.UI.Commands
 		public bool ParticipantExists()
 		{
 			return 
-				_mainViewModel.NewIncident.Participants.Any(
-					participant => participant.LastName == _mainViewModel.CurrentParticipant.LastName &&
-					participant.FirstName == _mainViewModel.CurrentParticipant.FirstName &&
-					participant.MiddleName == _mainViewModel.CurrentParticipant.MiddleName &&
-					participant.Address == _mainViewModel.CurrentParticipant.Address);
+				_homeViewModel.NewIncident.Participants.Any(
+					participant => participant.LastName == _homeViewModel.CurrentParticipant.LastName &&
+					participant.FirstName == _homeViewModel.CurrentParticipant.FirstName &&
+					participant.MiddleName == _homeViewModel.CurrentParticipant.MiddleName &&
+					participant.Address == _homeViewModel.CurrentParticipant.Address);
 		}
 	}
 }

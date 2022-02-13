@@ -10,6 +10,8 @@ namespace IncidentRegistrar.UI.ViewModels
 {
 	public class NewIncidentViewModel : ViewModelBase
 	{
+		#region RegDate Property 
+
 		private DateTime _regDate;
 		public DateTime RegDate
 		{
@@ -20,6 +22,10 @@ namespace IncidentRegistrar.UI.ViewModels
 				OnPropertyChanged(nameof(RegDate));
 			}
 		}
+
+		#endregion
+
+		#region IncidentType Property
 
 		private string _incidentType;
 		public string IncidentType
@@ -32,6 +38,10 @@ namespace IncidentRegistrar.UI.ViewModels
 			}
 		}
 
+		#endregion
+
+		#region ResolutionType Property
+
 		private string _resolutionType;
 		public string ResolutionType
 		{
@@ -42,6 +52,10 @@ namespace IncidentRegistrar.UI.ViewModels
 				OnPropertyChanged(nameof(ResolutionType));
 			}
 		}
+
+		#endregion
+
+		#region Participants Property
 
 		private ObservableCollection<ParticipantViewModel> _participants = new ObservableCollection<ParticipantViewModel>();
 
@@ -55,15 +69,17 @@ namespace IncidentRegistrar.UI.ViewModels
 			}
 		}
 
+		#endregion
+
 		public List<string> IncidentTypes { get; set; } = new List<string>() { "Ограбление", "Несчастный случай", "Драка", "Мелкое хулиганство", "Другое" };
 
 		public List<string> ResolutionTypes { get; set; } = new List<string>() { "Отказано", "Удовлетворено", "Перенаправлено" };
 
 		public ICommand CreateIncidentCommand { get; }
 
-		public NewIncidentViewModel(MainViewModel mainViewModel, IIncidentRepository incidentRepository)
+		public NewIncidentViewModel(HomeViewModel homeViewModel, IIncidentRepository incidentRepository)
 		{
-			CreateIncidentCommand = new CreateIncidentCommand(mainViewModel, incidentRepository);
+			CreateIncidentCommand = new CreateIncidentCommand(homeViewModel, incidentRepository);
 			RegDate = DateTime.Now;
 		}
 	}

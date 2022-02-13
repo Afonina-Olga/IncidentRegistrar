@@ -1,10 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+
+using IncidentRegistrar.UI.Models;
 
 namespace IncidentRegistrar.UI.State
 {
-	interface IUserStore
+	public interface IUserStore
 	{
+		event Action StateChanged;
+
+		User User { get; set; }
 	}
 }

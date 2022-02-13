@@ -12,12 +12,12 @@ namespace IncidentRegistrar.UI.Commands
 {
 	public class CreateIncidentCommand : AsyncCommandBase
 	{
-		private readonly MainViewModel _mainViewModel;
+		private readonly HomeViewModel _homeViewModel;
 		private readonly IIncidentRepository _incidentRepository;
 
-		public CreateIncidentCommand(MainViewModel mainViewModel, IIncidentRepository incidentRepository)
+		public CreateIncidentCommand(HomeViewModel homeViewModel, IIncidentRepository incidentRepository)
 		{
-			_mainViewModel = mainViewModel;
+			_homeViewModel = homeViewModel;
 			_incidentRepository = incidentRepository;
 		}
 
@@ -29,10 +29,10 @@ namespace IncidentRegistrar.UI.Commands
 				{
 					var createdIncident = await _incidentRepository.Create(new Incident()
 					{
-						IncidentType = _mainViewModel.NewIncident.IncidentType.ToIncidentType(),
-						RegDate = _mainViewModel.NewIncident.RegDate,
-						ResolutionType = _mainViewModel.NewIncident.ResolutionType.ToResolutionType(),
-						Participants = _mainViewModel.NewIncident.Participants.Select(participant => new Participant()
+						IncidentType = _homeViewModel.NewIncident.IncidentType.ToIncidentType(),
+						RegDate = _homeViewModel.NewIncident.RegDate,
+						ResolutionType = _homeViewModel.NewIncident.ResolutionType.ToResolutionType(),
+						Participants = _homeViewModel.NewIncident.Participants.Select(participant => new Participant()
 						{
 							Person = new Person()
 							{
@@ -47,15 +47,15 @@ namespace IncidentRegistrar.UI.Commands
 						.ToList()
 					});
 
-					_mainViewModel.Incidents.Add(new IncidentViewModel(_mainViewModel, _incidentRepository)
+					_homeViewModel.Incidents.Add(new IncidentViewModel(_homeViewModel, _incidentRepository)
 					{
-						IncidentType = _mainViewModel.NewIncident.IncidentType,
+						IncidentType = _homeViewModel.NewIncident.IncidentType,
 						Id = createdIncident.Id,
-						RegDate = _mainViewModel.NewIncident.RegDate,
-						ResolutionType = _mainViewModel.NewIncident.ResolutionType,
+						RegDate = _homeViewModel.NewIncident.RegDate,
+						ResolutionType = _homeViewModel.NewIncident.ResolutionType,
 						Participants = string.Join(
 							Environment.NewLine,
-							_mainViewModel.NewIncident.Participants.Select(p => $"{p.LastName} {p.FirstName} {p.MiddleName}"))
+							_homeViewModel.NewIncident.Participants.Select(p => $"{p.LastName} {p.FirstName} {p.MiddleName}"))
 					});
 				}
 				else
@@ -63,17 +63,17 @@ namespace IncidentRegistrar.UI.Commands
 			}
 			catch (Exception ex)
 			{
-				_mainViewModel.ErrorMessage = "Не удалось добавить происшествие";
+				_homeViewModel.ErrorMessage = "Не удалось добавить происшествие";
 			}
 		}
 
 		private bool CanCreate()
 		{
 			return
-				!string.IsNullOrEmpty(_mainViewModel.NewIncident.IncidentType) &&
-				!string.IsNullOrEmpty(_mainViewModel.NewIncident.ResolutionType) &&
-				_mainViewModel.NewIncident.RegDate.Year != 1 &&
-				_mainViewModel.NewIncident.Participants.Any();
+				!string.IsNullOrEmpty(_homeViewModel.NewIncident.IncidentType) &&
+				!string.IsNullOrEmpty(_homeViewModel.NewIncident.ResolutionType) &&
+				_homeViewModel.NewIncident.RegDate.Year != 1 &&
+				_homeViewModel.NewIncident.Participants.Any();
 		}
 	}
 }
