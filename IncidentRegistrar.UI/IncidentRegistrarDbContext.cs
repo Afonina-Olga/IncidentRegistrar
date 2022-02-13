@@ -14,6 +14,8 @@ namespace IncidentRegistrar.UI
 
 		public DbSet<ParticipantIncident> ParticipantIncident { get; set; }
 
+		public DbSet<User> Users { get; set; }
+
 		public IncidentRegistrarDbContext(DbContextOptions options) : base(options) { }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
