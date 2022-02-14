@@ -38,13 +38,13 @@ namespace IncidentRegistrar.UI.Commands
 		{
 			try
 			{
-				var currentViewModelCommand = new UpdateCurrentViewModelCommand(_navigator, _viewModelFactory);
-				currentViewModelCommand.Execute(ViewType.Read);
-
 				_currentIncidentStore.Id = _viewModel.Id;
 				_currentIncidentStore.IncidentType = _viewModel.IncidentType;
 				_currentIncidentStore.ResolutionType = _viewModel.ResolutionType;
 				_currentIncidentStore.Participants = _viewModel.Participants;
+
+				var currentViewModelCommand = new UpdateCurrentViewModelCommand(_navigator, _viewModelFactory);
+				currentViewModelCommand.Execute(ViewType.Read);
 			}
 			catch
 			{
