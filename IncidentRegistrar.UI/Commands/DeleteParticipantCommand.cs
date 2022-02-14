@@ -28,11 +28,7 @@ namespace IncidentRegistrar.UI.Commands
 			try
 			{
 				var id = int.Parse(parameter.ToString());
-				var itemToRemove = _currentIncidentStore.Participants.FirstOrDefault(participant => participant.Id == id);
-				if (itemToRemove != null)
-				{
-					_currentIncidentStore.Participants.Remove(itemToRemove);
-				}
+				_currentIncidentStore.RemoveParticipant(id);
 			}
 			catch
 			{

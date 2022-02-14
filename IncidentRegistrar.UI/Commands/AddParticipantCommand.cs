@@ -13,9 +13,10 @@ namespace IncidentRegistrar.UI.Commands
 		private readonly CreateIncidentViewModel _viewModel;
 		private readonly ICurrentIncidentStore _currentIncidentStore;
 
-		public AddParticipantCommand(CreateIncidentViewModel viewModel)
+		public AddParticipantCommand(CreateIncidentViewModel viewModel, ICurrentIncidentStore currentIncidentStore)
 		{
 			_viewModel = viewModel;
+			_currentIncidentStore = currentIncidentStore;
 		}
 
 		public event EventHandler CanExecuteChanged;
@@ -35,15 +36,15 @@ namespace IncidentRegistrar.UI.Commands
 				else if (ParticipantExists())
 					MessageBox.Show("Нельзя добавить участника дважды");
 				else
-					_viewModel.Participants.Add(
-						new ParticipantViewModel(_currentIncidentStore)
-						{
-							Address = _viewModel.CurrentParticipant.Address,
-							LastName = _viewModel.CurrentParticipant.LastName,
-							FirstName = _viewModel.CurrentParticipant.FirstName,
-							MiddleName = _viewModel.CurrentParticipant.MiddleName,
-							PersonType = _viewModel.CurrentParticipant.SelectedPersonType
-						});
+					_currentIncidentStore.AddParticipant(new ParticipantViewModel(_currentIncidentStore)
+					{
+						Address = _viewModel.CurrentParticipant.Address,
+						LastName = _viewModel.CurrentParticipant.LastName,
+						FirstName = _viewModel.CurrentParticipant.FirstName,
+						MiddleName = _viewModel.CurrentParticipant.MiddleName,
+						ConvictionsCount = _viewModel.CurrentParticipant.ConvictionsCount,
+						PersonType = _viewModel.CurrentParticipant.SelectedPersonType
+					});
 			}
 			catch
 			{

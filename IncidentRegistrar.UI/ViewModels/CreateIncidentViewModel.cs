@@ -11,6 +11,8 @@ namespace IncidentRegistrar.UI.ViewModels
 {
 	public class CreateIncidentViewModel : ViewModelBase
 	{
+		private readonly ICurrentIncidentStore _currentIncidentStore;
+
 		public List<string> IncidentTypes { get; set; } = new List<string>() { "Ограбление", "Несчастный случай", "Драка", "Мелкое хулиганство", "Другое" };
 
 		public List<string> ResolutionTypes { get; set; } = new List<string>() { "Отказано", "Удовлетворено", "Перенаправлено" };
@@ -97,8 +99,30 @@ namespace IncidentRegistrar.UI.ViewModels
 			CurrentParticipant = new ParticipantViewModel(currentIncidentStore);
 			RenavigateHomeViewCommand = new RenavigateCommand(homeRenavigator);
 			CreateIncidentCommand = new CreateIncidentCommand(this, incidentRepository, incidentStore, homeRenavigator);
-			AddParticipantCommand = new AddParticipantCommand(this);
+			AddParticipantCommand = new AddParticipantCommand(this, currentIncidentStore);
 			RegDate = DateTime.Now;
+
+			_currentIncidentStore = currentIncidentStore;
+
+			_currentIncidentStore.ParticipantAdded += OnParticipantAdded;
+			_currentIncidentStore.ParticipantRemoved += OnParticipantRemoved;
+		}
+
+		public override void Dispose()
+		{
+			_currentIncidentStore.ParticipantAdded -= OnParticipantAdded;
+			_currentIncidentStore.ParticipantRemoved -= OnParticipantRemoved;
+			base.Dispose();
+		}
+
+		private void OnParticipantAdded(ParticipantViewModel participant)
+		{
+			Participants.Add(participant);
+		}
+
+		private void OnParticipantRemoved(ParticipantViewModel participant)
+		{
+			Participants.Remove(participant);
 		}
 	}
 }

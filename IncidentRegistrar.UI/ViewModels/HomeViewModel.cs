@@ -77,6 +77,7 @@ namespace IncidentRegistrar.UI.ViewModels
 			_incidentStore.IncidentDeleted += OnIncidentDeleted;
 			_incidentStore.IncidentAdded += OnIncidentAdded;
 			_incidentStore.IncidentsLoaded += OnIncidentsLoaded;
+			_incidentStore.IncidentUpdated += OnIncidentUpdated;
 
 			LoadIncidentsCommand = new LoadIncidentsCommand(this, incidentRepository, incidentStore, navigator, viewModelFactory);
 			LoadIncidentsCommand.Execute(null);
@@ -84,11 +85,22 @@ namespace IncidentRegistrar.UI.ViewModels
 			UpdateCurrentViewModelCommand = new UpdateCurrentViewModelCommand(navigator, viewModelFactory);
 		}
 
+		private void OnIncidentUpdated(Incident incident)
+		{
+			var currentIncident = Incidents.FirstOrDefault(i => i.Id == incident.Id);
+			currentIncident.IncidentType = incident.IncidentType.FromIncidentType();
+			currentIncident.ResolutionType = incident.ResolutionType.FromResolutionType();
+			currentIncident.RegDate = incident.RegDate;
+			currentIncident.Participants = incident.Participants.Select(participant => ToParticipantViewModel(participant)).ToList();
+			currentIncident.ParticipantsListing = incident.Participants.ToPersonString();
+		}
+
 		public override void Dispose()
 		{
 			_incidentStore.IncidentDeleted -= OnIncidentDeleted;
 			_incidentStore.IncidentAdded -= OnIncidentAdded;
 			_incidentStore.IncidentsLoaded -= OnIncidentsLoaded;
+			_incidentStore.IncidentUpdated -= OnIncidentUpdated;
 			base.Dispose();
 		}
 
@@ -106,7 +118,12 @@ namespace IncidentRegistrar.UI.ViewModels
 
 		private void OnIncidentDeleted(Incident incident)
 		{
-			var incidentToRemove = Incidents.FirstOrDefault(incident => incident.Id == incident.Id);
+			RemoveIncident(incident.Id);
+		}
+
+		private void RemoveIncident(int id)
+		{
+			var incidentToRemove = Incidents.FirstOrDefault(incident => incident.Id == id);
 			Incidents.Remove(incidentToRemove);
 		}
 

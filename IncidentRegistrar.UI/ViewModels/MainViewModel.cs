@@ -1,7 +1,6 @@
 ﻿using System.Windows.Input;
 
 using IncidentRegistrar.UI.Commands;
-using IncidentRegistrar.UI.Repositories;
 using IncidentRegistrar.UI.State;
 using IncidentRegistrar.UI.ViewModels.Factories;
 

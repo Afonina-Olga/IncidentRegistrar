@@ -7,14 +7,22 @@ namespace IncidentRegistrar.UI.State
 {
 	public interface ICurrentIncidentStore
 	{
-		public int Id { get; set; }
+		int Id { get; set; }
 
-		public DateTime RegDate { get; set; }
+		DateTime RegDate { get; set; }
 
-		public string IncidentType { get; set; }
+		string IncidentType { get; set; }
 
-		public string ResolutionType { get; set; }
+		string ResolutionType { get; set; }
 
-		public List<ParticipantViewModel> Participants { get; set; }
+		List<ParticipantViewModel> Participants { get; set; }
+
+		void RemoveParticipant(int id);
+
+		void AddParticipant(ParticipantViewModel participant);
+
+		event Action<ParticipantViewModel> ParticipantRemoved;
+
+		event Action<ParticipantViewModel> ParticipantAdded;
 	}
 }

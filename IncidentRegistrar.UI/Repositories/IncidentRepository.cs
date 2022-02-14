@@ -28,33 +28,7 @@ namespace IncidentRegistrar.UI.Repositories
 				ResolutionType = entity.ResolutionType
 			});
 
-			foreach (var participant in entity.Participants)
-			{
-				var participantInDb = context.Participants.FirstOrDefault(item =>
-					item.Person.LastName == participant.Person.LastName &&
-					item.Person.FirstName == participant.Person.FirstName &&
-					item.Person.MiddleName == participant.Person.MiddleName &&
-					item.Person.Address == participant.Person.Address);
-
-				if (participantInDb != null)
-				{
-					await context.Set<ParticipantIncident>().AddAsync(new ParticipantIncident()
-					{
-						IncidentId = createdIncident.Id,
-						ParticipantId = participantInDb.Id
-					});
-				}
-				else
-				{
-					var addedEntity = await context.Participants.AddAsync(participant);
-					await context.SaveChangesAsync();
-					await context.Set<ParticipantIncident>().AddAsync(new ParticipantIncident()
-					{
-						IncidentId = createdIncident.Id,
-						ParticipantId = addedEntity.Entity.Id
-					});
-				}
-			}
+			await AddParticipants(createdIncident.Id, entity.Participants);
 
 			await context.SaveChangesAsync();
 			return await Get(createdIncident.Id);
@@ -72,6 +46,24 @@ namespace IncidentRegistrar.UI.Repositories
 				return true;
 			}
 			return false;
+		}
+
+		public override async Task<Incident> Update(int id, Incident entity)
+		{
+			using var context = _contextFactory.CreateDbContext();
+
+			var incidentInDb = await context.Incidents.FirstOrDefaultAsync(incident => incident.Id == id);
+
+			incidentInDb.IncidentType = entity.IncidentType;
+			incidentInDb.ResolutionType = entity.ResolutionType;
+			incidentInDb.RegDate = entity.RegDate;
+
+			context.ParticipantIncident.RemoveRange(context.ParticipantIncident.Where(x => x.IncidentId == incidentInDb.Id));
+			context.SaveChanges();
+
+			await AddParticipants(id, entity.Participants);
+
+			return await Get(id);
 		}
 
 		public override async Task<IEnumerable<Incident>> Get()
@@ -106,6 +98,40 @@ namespace IncidentRegistrar.UI.Repositories
 				.ToListAsync();
 
 			return entities;
+		}
+
+		private async Task AddParticipants(int id, List<Participant> participants)
+		{
+			using var context = _contextFactory.CreateDbContext();
+
+			foreach (var participant in participants)
+			{
+				var participantInDb = context.Participants.FirstOrDefault(item =>
+					item.Person.LastName == participant.Person.LastName &&
+					item.Person.FirstName == participant.Person.FirstName &&
+					item.Person.MiddleName == participant.Person.MiddleName &&
+					item.Person.Address == participant.Person.Address);
+
+				if (participantInDb != null)
+				{
+					await context.Set<ParticipantIncident>().AddAsync(new ParticipantIncident()
+					{
+						IncidentId = id,
+						ParticipantId = participantInDb.Id
+					});
+				}
+				else
+				{
+					var addedEntity = await context.Participants.AddAsync(participant);
+					await context.SaveChangesAsync();
+					await context.Set<ParticipantIncident>().AddAsync(new ParticipantIncident()
+					{
+						IncidentId = id,
+						ParticipantId = addedEntity.Entity.Id
+					});
+				}
+			}
+			context.SaveChanges();
 		}
 	}
 }

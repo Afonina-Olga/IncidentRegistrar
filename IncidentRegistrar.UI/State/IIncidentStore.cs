@@ -11,6 +11,8 @@ namespace IncidentRegistrar.UI.State
 
 		event Action<Incident> IncidentDeleted;
 
+		event Action<Incident> IncidentUpdated;
+
 		event Action<List<Incident>> IncidentsLoaded;
 
 		List<Incident> Incidents { get; set; }
@@ -20,5 +22,7 @@ namespace IncidentRegistrar.UI.State
 		void DeleteIncident(Incident incident);
 
 		void DeleteIncident(int id);
+
+		void UpdateIncident(Incident incident);
 	}
 }

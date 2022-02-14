@@ -14,6 +14,8 @@ namespace IncidentRegistrar.UI.State
 
 		public event Action<List<Incident>> IncidentsLoaded;
 
+		public event Action<Incident> IncidentUpdated;
+
 		private List<Incident> _incidents = new List<Incident>();
 		public List<Incident> Incidents
 		{
@@ -41,6 +43,14 @@ namespace IncidentRegistrar.UI.State
 		{
 			var incidentToRemove = Incidents.FirstOrDefault(incident => incident.Id == id);
 			IncidentDeleted?.Invoke(incidentToRemove);
+		}
+
+		public void UpdateIncident(Incident incident)
+		{
+			var item = Incidents.FirstOrDefault(i => i.Id == incident.Id);
+			Incidents.Remove(item);
+			Incidents.Add(incident);
+			IncidentUpdated?.Invoke(incident);
 		}
 	}
 }
