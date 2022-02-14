@@ -1,9 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using IncidentRegistrar.UI.Commands;
+using IncidentRegistrar.UI.State;
+using System.Collections.Generic;
+using System.Windows.Input;
 
 namespace IncidentRegistrar.UI.ViewModels
 {
 	public class ParticipantViewModel : ViewModelBase
 	{
+		public int Id { get; set; }
+
 		private string _lastName;
 		public string LastName
 		{
@@ -82,5 +87,12 @@ namespace IncidentRegistrar.UI.ViewModels
 		}
 
 		public List<string> PersonTypes { get; set; } = new List<string>() { "Потерпевший", "Виновник", "Подозреваемый", "Свидетель" };
+
+		public ICommand DeleteParticipantCommand { get; }
+
+		public ParticipantViewModel(ICurrentIncidentStore currentIncidentStore)
+		{
+			DeleteParticipantCommand = new DeleteParticipantCommand(currentIncidentStore);
+		}
 	}
 }

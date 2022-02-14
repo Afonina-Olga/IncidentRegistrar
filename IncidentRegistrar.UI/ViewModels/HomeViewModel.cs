@@ -127,8 +127,9 @@ namespace IncidentRegistrar.UI.ViewModels
 
 		private ParticipantViewModel ToParticipantViewModel(Participant participant)
 		{
-			return new ParticipantViewModel()
+			return new ParticipantViewModel(_currentIncidentStore)
 			{
+				Id = participant.Id,
 				FirstName = participant.Person.FirstName,
 				LastName = participant.Person.LastName,
 				MiddleName = participant.Person.MiddleName,

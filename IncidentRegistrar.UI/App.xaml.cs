@@ -65,6 +65,7 @@ namespace IncidentRegistrar.UI
 		private static CreateIncidentViewModel CreateCreateIncidentViewModel(IServiceProvider services)
 		{
 			return new CreateIncidentViewModel(
+				services.GetRequiredService<ICurrentIncidentStore>(),
 				services.GetRequiredService<IIncidentStore>(),
 				services.GetRequiredService<IIncidentRepository>(),
 				services.GetRequiredService<ViewModelRenavigator<HomeViewModel>>());
@@ -79,7 +80,11 @@ namespace IncidentRegistrar.UI
 
 		private static EditIncidentViewModel CreateEditIncidentViewModel(IServiceProvider services)
 		{
-			return new EditIncidentViewModel();
+			return new EditIncidentViewModel(
+				services.GetRequiredService<ICurrentIncidentStore>(),
+				services.GetRequiredService<IIncidentStore>(),
+				services.GetRequiredService<IIncidentRepository>(),
+				services.GetRequiredService<ViewModelRenavigator<HomeViewModel>>());
 		}
 
 		private static HomeViewModel CreateHomeViewModel(IServiceProvider services)

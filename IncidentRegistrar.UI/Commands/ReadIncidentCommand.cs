@@ -39,12 +39,16 @@ namespace IncidentRegistrar.UI.Commands
 			try
 			{
 				_currentIncidentStore.Id = _viewModel.Id;
+				_currentIncidentStore.RegDate = _viewModel.RegDate;
 				_currentIncidentStore.IncidentType = _viewModel.IncidentType;
 				_currentIncidentStore.ResolutionType = _viewModel.ResolutionType;
 				_currentIncidentStore.Participants = _viewModel.Participants;
 
-				var currentViewModelCommand = new UpdateCurrentViewModelCommand(_navigator, _viewModelFactory);
-				currentViewModelCommand.Execute(ViewType.Read);
+				if (parameter is ViewType)
+				{
+					var currentViewModelCommand = new UpdateCurrentViewModelCommand(_navigator, _viewModelFactory);
+					currentViewModelCommand.Execute((ViewType)parameter);
+				}
 			}
 			catch
 			{

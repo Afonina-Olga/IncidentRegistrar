@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
+using IncidentRegistrar.UI.State;
 using IncidentRegistrar.UI.ViewModels;
 
 namespace IncidentRegistrar.UI.Commands
@@ -10,6 +11,7 @@ namespace IncidentRegistrar.UI.Commands
 	public class AddParticipantCommand : ICommand
 	{
 		private readonly CreateIncidentViewModel _viewModel;
+		private readonly ICurrentIncidentStore _currentIncidentStore;
 
 		public AddParticipantCommand(CreateIncidentViewModel viewModel)
 		{
@@ -34,7 +36,7 @@ namespace IncidentRegistrar.UI.Commands
 					MessageBox.Show("Нельзя добавить участника дважды");
 				else
 					_viewModel.Participants.Add(
-						new ParticipantViewModel()
+						new ParticipantViewModel(_currentIncidentStore)
 						{
 							Address = _viewModel.CurrentParticipant.Address,
 							LastName = _viewModel.CurrentParticipant.LastName,

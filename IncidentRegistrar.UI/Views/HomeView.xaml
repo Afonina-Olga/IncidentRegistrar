@@ -82,8 +82,8 @@
                                 ToolTip="Редактировать"
                                 Width="30"
                                 Height="30"
-                                Command="{Binding UpdateCurrentViewModelCommand}"
-                                CommandParameter="{x:Static nav:ViewType.Create}"
+                                Command="{Binding ReadIncidentCommand}"
+                                CommandParameter="{x:Static nav:ViewType.Edit}"
                                 Style="{StaticResource MaterialDesignIconButton}"
                                 Background="{DynamicResource MaterialDesignTextFieldBoxBackground}">
                                 <materialDesign:PackIcon Kind="Edit" Height="20" Width="20"/>
@@ -99,6 +99,7 @@
                                 Width="30"
                                 Height="30"
                                 Command="{Binding ReadIncidentCommand}"
+                                CommandParameter="{x:Static nav:ViewType.Read}"
                                 Style="{StaticResource MaterialDesignIconButton}"
                                 Background="{DynamicResource MaterialDesignTextFieldBoxBackground}">
                                 <materialDesign:PackIcon Kind="File" Height="20" Width="20"/>

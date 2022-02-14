@@ -25,9 +25,9 @@ namespace IncidentRegistrar.UI.Extentions
 		{
 			return type switch
 			{
-				ResolutionType.Refused => "Отказано в возбуждении дела",
-				ResolutionType.Initiated => "Удовлетворено ходатайство",
-				ResolutionType.Redirected => "Отправлено по территориальному признаку",
+				ResolutionType.Refused => "Отказано",
+				ResolutionType.Initiated => "Удовлетворено",
+				ResolutionType.Redirected => "Отправлено",
 				_ => throw new ArgumentException("Неизвестный тип резолюции")
 			};
 		}

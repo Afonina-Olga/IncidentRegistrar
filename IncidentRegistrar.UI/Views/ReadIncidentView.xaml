@@ -34,8 +34,8 @@
                         <RowDefinition Height="30"/>
                         <RowDefinition Height="30"/>
                         <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Регистрационный номер: " />
                     <TextBlock Grid.Row="0" Grid.Column="1" Margin="10 0 0 0" Text="{Binding Id}"/>
@@ -46,8 +46,39 @@
                     <TextBlock Grid.Row="3" Grid.Column="0" Text="Вынесена резолюция:" />
                     <TextBlock Grid.Row="3" Grid.Column="1" Margin="10 0 0 0" Text="{Binding ResolutionType}"/>
                     <TextBlock Grid.Row="4" Grid.Column="0" Text="Участники" />
-                    
+                    <ItemsControl Grid.Row="4" Grid.Column="1" ItemsSource="{Binding Participants}" Margin="10 0 0 0">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderThickness="1" BorderBrush="Violet" Margin="0 10 0 0">
+                                    <Grid Margin="5">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Text="{Binding PersonType, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold"/>
+                                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                            <TextBlock Text="ФИО: " FontWeight="Medium" />
+                                            <TextBlock Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}" />
+                                            <TextBlock Margin="5 0 0 0" Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"/>
+                                            <TextBlock Margin="5 0 0 0" Text="{Binding MiddleName, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                                            <TextBlock Text="Зарегистрирован(а) по адресу: " FontWeight="Medium"/>
+                                            <TextBlock Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="3" Orientation="Horizontal">
+                                            <TextBlock Text="Количество судимостей: " FontWeight="Medium"/>
+                                            <TextBlock Text="{Binding ConvictionsCount, UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </Grid>
+                
             </Grid>
         </Grid>
         <Grid Grid.Row="1" HorizontalAlignment="Right" Margin="0 20 0 0">
@@ -71,12 +102,6 @@
             </Button>
         </Grid>
 
-        <ItemsControl ItemsSource="{Binding Participants}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding LastName}"/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        
     </Grid>
 </UserControl>

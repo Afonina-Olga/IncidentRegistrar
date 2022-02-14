@@ -89,11 +89,12 @@ namespace IncidentRegistrar.UI.ViewModels
 		#endregion
 
 		public CreateIncidentViewModel(
+			ICurrentIncidentStore currentIncidentStore,
 			IIncidentStore incidentStore,
 			IIncidentRepository incidentRepository,
 			IRenavigator homeRenavigator)
 		{
-			CurrentParticipant = new ParticipantViewModel();
+			CurrentParticipant = new ParticipantViewModel(currentIncidentStore);
 			RenavigateHomeViewCommand = new RenavigateCommand(homeRenavigator);
 			CreateIncidentCommand = new CreateIncidentCommand(this, incidentRepository, incidentStore, homeRenavigator);
 			AddParticipantCommand = new AddParticipantCommand(this);
