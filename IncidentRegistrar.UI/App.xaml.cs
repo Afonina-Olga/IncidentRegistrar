@@ -39,6 +39,7 @@ namespace IncidentRegistrar.UI
 					services.AddSingleton<INavigator, Navigator>();
 					services.AddSingleton<IUserStore, UserStore>();
 					services.AddSingleton<IIncidentStore, IncidentStore>();
+					services.AddSingleton<ICurrentIncidentStore, CurrentIncidentStore>();
 
 					services.AddTransient(CreateHomeViewModel);
 					services.AddTransient<MainViewModel>();
@@ -71,7 +72,9 @@ namespace IncidentRegistrar.UI
 
 		private static ReadIncidentViewModel CreateReadIncidentViewModel(IServiceProvider services)
 		{
-			return new ReadIncidentViewModel();
+			return new ReadIncidentViewModel(
+				services.GetRequiredService<ViewModelRenavigator<HomeViewModel>>(),
+				services.GetRequiredService<ICurrentIncidentStore>());
 		}
 
 		private static EditIncidentViewModel CreateEditIncidentViewModel(IServiceProvider services)
@@ -85,7 +88,8 @@ namespace IncidentRegistrar.UI
 				services.GetRequiredService<IIncidentRepository>(),
 				services.GetRequiredService<INavigator>(),
 				services.GetRequiredService<IViewModelFactory>(),
-				services.GetRequiredService<IIncidentStore>());
+				services.GetRequiredService<IIncidentStore>(),
+				services.GetRequiredService<ICurrentIncidentStore>());
 		}
 
 		private static LoginViewModel CreateLoginViewModel(IServiceProvider services)

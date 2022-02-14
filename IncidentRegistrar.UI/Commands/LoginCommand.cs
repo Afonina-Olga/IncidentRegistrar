@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using IncidentRegistrar.UI.State;
 using IncidentRegistrar.UI.ViewModels;
 using IncidentRegistrar.UI.Services;
+using System;
 
 namespace IncidentRegistrar.UI.Commands
 {
@@ -43,7 +44,7 @@ namespace IncidentRegistrar.UI.Commands
 				else
 					MessageBox.Show("Неверный логин или пароль");
 			}
-			catch
+			catch(Exception ex)
 			{
 				MessageBox.Show("Не удалось войти в систему");
 			}

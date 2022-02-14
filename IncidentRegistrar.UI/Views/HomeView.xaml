@@ -46,7 +46,7 @@
                     Header="Участники"
                     ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"
                     EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                    Binding="{Binding Participants, UpdateSourceTrigger=PropertyChanged}"/>
+                    Binding="{Binding ParticipantsListing, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridTextColumn
                     Width="150"
                     Header="Тип происшествия"
@@ -82,8 +82,8 @@
                                 ToolTip="Редактировать"
                                 Width="30"
                                 Height="30"
-                                Command="{Binding EditIncidentCommand}"
-                                CommandParameter="{Binding Id}"
+                                Command="{Binding UpdateCurrentViewModelCommand}"
+                                CommandParameter="{x:Static nav:ViewType.Create}"
                                 Style="{StaticResource MaterialDesignIconButton}"
                                 Background="{DynamicResource MaterialDesignTextFieldBoxBackground}">
                                 <materialDesign:PackIcon Kind="Edit" Height="20" Width="20"/>
@@ -99,7 +99,6 @@
                                 Width="30"
                                 Height="30"
                                 Command="{Binding ReadIncidentCommand}"
-                                CommandParameter="{Binding Id}"
                                 Style="{StaticResource MaterialDesignIconButton}"
                                 Background="{DynamicResource MaterialDesignTextFieldBoxBackground}">
                                 <materialDesign:PackIcon Kind="File" Height="20" Width="20"/>

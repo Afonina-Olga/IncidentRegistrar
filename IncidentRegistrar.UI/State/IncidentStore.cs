@@ -12,7 +12,18 @@ namespace IncidentRegistrar.UI.State
 
 		public event Action<Incident> IncidentDeleted;
 
-		public List<Incident> Incidents { get; set; } = new List<Incident>();
+		public event Action<List<Incident>> IncidentsLoaded;
+
+		private List<Incident> _incidents = new List<Incident>();
+		public List<Incident> Incidents
+		{
+			get { return _incidents; }
+			set
+			{
+				_incidents = value;
+				IncidentsLoaded?.Invoke(value);
+			}
+		}
 
 		public void AddIncident(Incident incident)
 		{

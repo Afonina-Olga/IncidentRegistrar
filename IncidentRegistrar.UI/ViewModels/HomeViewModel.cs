@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -16,7 +15,10 @@ namespace IncidentRegistrar.UI.ViewModels
 	public class HomeViewModel : ViewModelBase
 	{
 		private readonly IIncidentStore _incidentStore;
+		private readonly ICurrentIncidentStore _currentIncidentStore;
 		private readonly IIncidentRepository _incidentRepository;
+		private readonly INavigator _navigator;
+		private readonly IViewModelFactory _viewModelFactory;
 
 		#region Incidents Property
 
@@ -63,37 +65,43 @@ namespace IncidentRegistrar.UI.ViewModels
 			IIncidentRepository incidentRepository,
 			INavigator navigator,
 			IViewModelFactory viewModelFactory,
-			IIncidentStore incidentStore)
+			IIncidentStore incidentStore,
+			ICurrentIncidentStore currentIncidentStore)
 		{
 			_incidentStore = incidentStore;
+			_currentIncidentStore = currentIncidentStore;
 			_incidentRepository = incidentRepository;
-
-			LoadIncidentsCommand = new LoadIncidentsCommand(this, incidentRepository, incidentStore);
-			LoadIncidentsCommand.Execute(null);
-
-			UpdateCurrentViewModelCommand = new UpdateCurrentViewModelCommand(navigator, viewModelFactory);
+			_navigator = navigator;
+			_viewModelFactory = viewModelFactory;
 
 			_incidentStore.IncidentDeleted += OnIncidentDeleted;
 			_incidentStore.IncidentAdded += OnIncidentAdded;
+			_incidentStore.IncidentsLoaded += OnIncidentsLoaded;
+
+			LoadIncidentsCommand = new LoadIncidentsCommand(this, incidentRepository, incidentStore, navigator, viewModelFactory);
+			LoadIncidentsCommand.Execute(null);
+
+			UpdateCurrentViewModelCommand = new UpdateCurrentViewModelCommand(navigator, viewModelFactory);
 		}
 
 		public override void Dispose()
 		{
 			_incidentStore.IncidentDeleted -= OnIncidentDeleted;
 			_incidentStore.IncidentAdded -= OnIncidentAdded;
+			_incidentStore.IncidentsLoaded -= OnIncidentsLoaded;
 			base.Dispose();
 		}
 
 		private void OnIncidentAdded(Incident incident)
 		{
-			Incidents.Add(new IncidentViewModel(_incidentStore, _incidentRepository)
+			Incidents.Add(new IncidentViewModel(_incidentStore, _currentIncidentStore, _incidentRepository, _navigator, _viewModelFactory)
 			{
 				Id = incident.Id,
 				IncidentType = incident.IncidentType.FromIncidentType(),
-				Participants = Convert(incident.Participants),
+				Participants = incident.Participants.Select(participant => ToParticipantViewModel(participant)).ToList(),
 				RegDate = incident.RegDate,
 				ResolutionType = incident.ResolutionType.FromResolutionType()
-			});
+			}); ;
 		}
 
 		private void OnIncidentDeleted(Incident incident)
@@ -102,14 +110,32 @@ namespace IncidentRegistrar.UI.ViewModels
 			Incidents.Remove(incidentToRemove);
 		}
 
-		private string Convert(List<Participant> participants)
+		private void OnIncidentsLoaded(List<Incident> incidents)
 		{
-			var names = participants.Select(participant =>
-			{
-				return $"{participant.Person.LastName} {participant.Person.FirstName} {participant.Person.MiddleName}";
-			});
+			Incidents = new ObservableCollection<IncidentViewModel>(
+				incidents
+				.Select(incident => new IncidentViewModel(_incidentStore, _currentIncidentStore, _incidentRepository, _navigator, _viewModelFactory)
+				{
+					Id = incident.Id,
+					IncidentType = incident.IncidentType.FromIncidentType(),
+					ResolutionType = incident.ResolutionType.FromResolutionType(),
+					RegDate = incident.RegDate,
+					Participants = incident.Participants.Select(participant => ToParticipantViewModel(participant)).ToList(),
+					ParticipantsListing = incident.Participants.ToPersonString()
+				}));
+		}
 
-			return string.Join(Environment.NewLine, names);
+		private ParticipantViewModel ToParticipantViewModel(Participant participant)
+		{
+			return new ParticipantViewModel()
+			{
+				FirstName = participant.Person.FirstName,
+				LastName = participant.Person.LastName,
+				MiddleName = participant.Person.MiddleName,
+				Address = participant.Person.Address,
+				PersonType = participant.PersonType.FromPersonType(),
+				ConvictionsCount = participant.Person.ConvictionsCount
+			};
 		}
 	}
 }

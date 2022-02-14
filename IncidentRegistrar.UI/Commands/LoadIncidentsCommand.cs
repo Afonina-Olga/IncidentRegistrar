@@ -7,6 +7,7 @@ using IncidentRegistrar.UI.State;
 using IncidentRegistrar.UI.Repositories;
 using IncidentRegistrar.UI.ViewModels;
 using IncidentRegistrar.UI.Extentions;
+using IncidentRegistrar.UI.ViewModels.Factories;
 
 namespace IncidentRegistrar.UI.Commands
 {
@@ -15,15 +16,21 @@ namespace IncidentRegistrar.UI.Commands
 		private readonly IIncidentRepository _incidentRepository;
 		private readonly HomeViewModel _homeViewModel;
 		private readonly IIncidentStore _incidentStore;
+		private readonly INavigator _navigator;
+		private readonly IViewModelFactory _viewModelFactory;
 
 		public LoadIncidentsCommand(
-			HomeViewModel homeViewModel, 
-			IIncidentRepository incidentRepository, 
-			IIncidentStore incidentStore)
+			HomeViewModel homeViewModel,
+			IIncidentRepository incidentRepository,
+			IIncidentStore incidentStore,
+			INavigator navigator,
+			IViewModelFactory viewModelFactory)
 		{
 			_homeViewModel = homeViewModel;
 			_incidentRepository = incidentRepository;
 			_incidentStore = incidentStore;
+			_viewModelFactory = viewModelFactory;
+			_navigator = navigator;
 		}
 
 		public override async Task ExecuteAsync(object parameter)
@@ -31,16 +38,8 @@ namespace IncidentRegistrar.UI.Commands
 			try
 			{
 				var incidents = await _incidentRepository.Get();
-				_homeViewModel.Incidents = new ObservableCollection<IncidentViewModel>(
-					incidents
-						.Select(incident => new IncidentViewModel(_incidentStore, _incidentRepository)
-						{
-							Id = incident.Id,
-							IncidentType = incident.IncidentType.FromIncidentType(),
-							ResolutionType = incident.ResolutionType.FromResolutionType(),
-							RegDate = incident.RegDate,
-							Participants = incident.Participants.ToPersonString()
-						}));
+				_incidentStore.Incidents = incidents.ToList();
+				
 			}
 			catch
 			{

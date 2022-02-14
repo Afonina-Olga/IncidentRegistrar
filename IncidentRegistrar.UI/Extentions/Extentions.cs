@@ -68,19 +68,26 @@ namespace IncidentRegistrar.UI.Extentions
 			};
 		}
 
+		public static string FromPersonType(this PersonType type)
+		{
+			return type switch
+			{
+				PersonType.Victim => "Потерпевший",
+				PersonType.Culprit => "Виновник",
+				PersonType.Suspect => "Подозреваемый",
+				PersonType.Witness => "Свидетель",
+				_ => throw new ArgumentException("Неизвестный тип участника")
+			};
+		}
+
 		public static string ToPersonString(this List<Participant> participants)
 		{
-			var res = participants.Select(participant =>
+			var names = participants.Select(participant =>
 			{
-				if (participant != null && participant.Person != null)
-				{
-					return $"{participant.Person.LastName} {participant.Person.FirstName} {participant.Person.MiddleName}";
-				}
-				else
-					return "";
-			}).ToList();
+				return $"{participant.Person.LastName} {participant.Person.FirstName} {participant.Person.MiddleName}";
+			});
 
-			return string.Join(Environment.NewLine, res);
+			return string.Join(Environment.NewLine, names);
 		}
 	}
 }
