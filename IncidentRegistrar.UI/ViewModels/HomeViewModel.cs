@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 
@@ -59,6 +60,8 @@ namespace IncidentRegistrar.UI.ViewModels
 
 		public ICommand UpdateCurrentViewModelCommand { get; }
 
+		public ICommand SearchCommand { get; }
+
 		#endregion
 
 		public HomeViewModel(
@@ -83,6 +86,18 @@ namespace IncidentRegistrar.UI.ViewModels
 			LoadIncidentsCommand.Execute(null);
 
 			UpdateCurrentViewModelCommand = new UpdateCurrentViewModelCommand(navigator, viewModelFactory);
+
+			SearchCommand = new SearchCommand(incidentStore, incidentRepository);
+
+			PropertyChanged += OnPropertyChanged;
+		}
+
+		private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof(Filter))
+			{
+				SearchCommand.Execute(Filter);
+			}
 		}
 
 		private void OnIncidentUpdated(Incident incident)
@@ -131,15 +146,20 @@ namespace IncidentRegistrar.UI.ViewModels
 		{
 			Incidents = new ObservableCollection<IncidentViewModel>(
 				incidents
-				.Select(incident => new IncidentViewModel(_incidentStore, _currentIncidentStore, _incidentRepository, _navigator, _viewModelFactory)
-				{
-					Id = incident.Id,
-					IncidentType = incident.IncidentType.FromIncidentType(),
-					ResolutionType = incident.ResolutionType.FromResolutionType(),
-					RegDate = incident.RegDate,
-					Participants = incident.Participants.Select(participant => ToParticipantViewModel(participant)).ToList(),
-					ParticipantsListing = incident.Participants.ToPersonString()
-				}));
+				.Select(incident => ToIncidentViewModel(incident)));
+		}
+
+		private IncidentViewModel ToIncidentViewModel(Incident incident)
+		{
+			return new IncidentViewModel(_incidentStore, _currentIncidentStore, _incidentRepository, _navigator, _viewModelFactory)
+			{
+				Id = incident.Id,
+				IncidentType = incident.IncidentType.FromIncidentType(),
+				ResolutionType = incident.ResolutionType.FromResolutionType(),
+				RegDate = incident.RegDate,
+				Participants = incident.Participants.Select(participant => ToParticipantViewModel(participant)).ToList(),
+				ParticipantsListing = incident.Participants.ToPersonString()
+			};
 		}
 
 		private ParticipantViewModel ToParticipantViewModel(Participant participant)

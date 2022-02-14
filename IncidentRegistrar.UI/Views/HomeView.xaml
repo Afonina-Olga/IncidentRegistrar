@@ -17,7 +17,7 @@
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Style="{StaticResource MaterialDesignHeadline4TextBlock}" Text="Все происшествия"/>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <TextBox Width="200" materialDesign:HintAssist.Hint="Поиск по фамилии участника" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding Filter}"/>
+            <TextBox Width="200" materialDesign:HintAssist.Hint="Поиск по фамилии участника" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}"/>
         </StackPanel>
         <DataGrid
             Grid.Row="2"

@@ -93,11 +93,11 @@ namespace IncidentRegistrar.UI.Repositories
 		{
 			using var context = _contextFactory.CreateDbContext();
 
-			var entities = await context.Incidents
-				.Where(incident => incident.Participants.Any(x => x.Person.LastName == lastName))
+			return await context.Incidents
+				.Include(incident => incident.Participants)
+					.ThenInclude(x => x.Person)
+				.Where(incident => incident.Participants.Any(x => x.Person.LastName.ToUpper().StartsWith(lastName.ToUpper())))
 				.ToListAsync();
-
-			return entities;
 		}
 
 		private async Task AddParticipants(int id, List<Participant> participants)
