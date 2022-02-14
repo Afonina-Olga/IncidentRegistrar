@@ -38,6 +38,7 @@ namespace IncidentRegistrar.UI
 					services.AddSingleton<IAuthenticationService, AuthenticationService>();
 					services.AddSingleton<INavigator, Navigator>();
 					services.AddSingleton<IUserStore, UserStore>();
+					services.AddSingleton<IIncidentStore, IncidentStore>();
 
 					services.AddTransient(CreateHomeViewModel);
 					services.AddTransient<MainViewModel>();
@@ -45,18 +46,46 @@ namespace IncidentRegistrar.UI
 					services.AddSingleton<CreateViewModel<HomeViewModel>>(services => () => services.GetRequiredService<HomeViewModel>());
 					services.AddSingleton<CreateViewModel<LoginViewModel>>(services => () => CreateLoginViewModel(services));
 					services.AddSingleton<CreateViewModel<RegisterViewModel>>(services => () => CreateRegisterViewModel(services));
+					services.AddSingleton<CreateViewModel<CreateIncidentViewModel>>(services => () => CreateCreateIncidentViewModel(services));
+					services.AddSingleton<CreateViewModel<ReadIncidentViewModel>>(services => () => CreateReadIncidentViewModel(services));
+					services.AddSingleton<CreateViewModel<EditIncidentViewModel>>(services => () => CreateEditIncidentViewModel(services));
 
 					services.AddSingleton<IViewModelFactory, ViewModelFactory>();
 
 					services.AddSingleton<ViewModelRenavigator<HomeViewModel>>();
 					services.AddSingleton<ViewModelRenavigator<LoginViewModel>>();
 					services.AddSingleton<ViewModelRenavigator<RegisterViewModel>>();
+					services.AddSingleton<ViewModelRenavigator<CreateIncidentViewModel>>();
+					services.AddSingleton<ViewModelRenavigator<ReadIncidentViewModel>>();
+					services.AddSingleton<ViewModelRenavigator<EditIncidentViewModel>>();
 				});
+		}
+
+		private static CreateIncidentViewModel CreateCreateIncidentViewModel(IServiceProvider services)
+		{
+			return new CreateIncidentViewModel(
+				services.GetRequiredService<IIncidentStore>(),
+				services.GetRequiredService<IIncidentRepository>(),
+				services.GetRequiredService<ViewModelRenavigator<HomeViewModel>>());
+		}
+
+		private static ReadIncidentViewModel CreateReadIncidentViewModel(IServiceProvider services)
+		{
+			return new ReadIncidentViewModel();
+		}
+
+		private static EditIncidentViewModel CreateEditIncidentViewModel(IServiceProvider services)
+		{
+			return new EditIncidentViewModel();
 		}
 
 		private static HomeViewModel CreateHomeViewModel(IServiceProvider services)
 		{
-			return new HomeViewModel(services.GetRequiredService<IIncidentRepository>());
+			return new HomeViewModel(
+				services.GetRequiredService<IIncidentRepository>(),
+				services.GetRequiredService<INavigator>(),
+				services.GetRequiredService<IViewModelFactory>(),
+				services.GetRequiredService<IIncidentStore>());
 		}
 
 		private static LoginViewModel CreateLoginViewModel(IServiceProvider services)

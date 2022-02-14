@@ -5,11 +5,18 @@ using System.Windows.Input;
 
 using IncidentRegistrar.UI.Commands;
 using IncidentRegistrar.UI.Repositories;
+using IncidentRegistrar.UI.State;
 
 namespace IncidentRegistrar.UI.ViewModels
 {
-	public class NewIncidentViewModel : ViewModelBase
+	public class CreateIncidentViewModel : ViewModelBase
 	{
+		public List<string> IncidentTypes { get; set; } = new List<string>() { "Ограбление", "Несчастный случай", "Драка", "Мелкое хулиганство", "Другое" };
+
+		public List<string> ResolutionTypes { get; set; } = new List<string>() { "Отказано", "Удовлетворено", "Перенаправлено" };
+
+		public ParticipantViewModel CurrentParticipant { get; set; }
+
 		#region RegDate Property 
 
 		private DateTime _regDate;
@@ -71,15 +78,22 @@ namespace IncidentRegistrar.UI.ViewModels
 
 		#endregion
 
-		public List<string> IncidentTypes { get; set; } = new List<string>() { "Ограбление", "Несчастный случай", "Драка", "Мелкое хулиганство", "Другое" };
+		#region Commands
 
-		public List<string> ResolutionTypes { get; set; } = new List<string>() { "Отказано", "Удовлетворено", "Перенаправлено" };
+		public ICommand RenavigateHomeViewCommand { get; }
+
+		public ICommand AddParticipantCommand { get; }
 
 		public ICommand CreateIncidentCommand { get; }
 
-		public NewIncidentViewModel(HomeViewModel homeViewModel, IIncidentRepository incidentRepository)
+		#endregion
+
+		public CreateIncidentViewModel(IIncidentStore incidentStore, IIncidentRepository incidentRepository, IRenavigator homeRenavigator)
 		{
-			CreateIncidentCommand = new CreateIncidentCommand(homeViewModel, incidentRepository);
+			CurrentParticipant = new ParticipantViewModel();
+			RenavigateHomeViewCommand = new RenavigateCommand(homeRenavigator);
+			CreateIncidentCommand = new CreateIncidentCommand(this, incidentRepository, incidentStore, homeRenavigator);
+			AddParticipantCommand = new AddParticipantCommand(this);
 			RegDate = DateTime.Now;
 		}
 	}

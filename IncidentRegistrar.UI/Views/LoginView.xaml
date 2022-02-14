@@ -26,7 +26,7 @@
                     Text="{Binding Login, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                     materialDesign:HintAssist.Hint="Логин"
                     materialDesign:TextFieldAssist.HasClearButton="True"
-                    Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                    Style="{StaticResource MaterialDesignFloatingHintTextBox}" Cursor="IBeam" />
                 <materialDesign:PackIcon VerticalAlignment="Bottom" Margin="0 20 0 0" Grid.Column="0" Grid.Row="1" Kind="Key" Foreground="Gray"/>
                 <TextBox
                     Grid.Row="1"
@@ -56,7 +56,7 @@
                         Margin="15 20 0 0"
                         Content="Вход"
                         Command="{Binding LoginCommand}"
-                        Style="{StaticResource MaterialDesignRaisedDarkButton}" />
+                        Style="{StaticResource MaterialDesignRaisedDarkButton}" Cursor="Hand" />
                 </Grid>
             </Grid>
         </Grid>

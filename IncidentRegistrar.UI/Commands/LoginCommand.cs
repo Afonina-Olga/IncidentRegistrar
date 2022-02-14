@@ -40,7 +40,6 @@ namespace IncidentRegistrar.UI.Commands
 					_renavigator.Renavigate();
 					_userStore.User = user;
 				}
-				
 				else
 					MessageBox.Show("Неверный логин или пароль");
 			}

@@ -4,10 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:nav="clr-namespace:IncidentRegistrar.UI.State"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Margin="30 10 30 30">
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -80,7 +82,7 @@
                                 ToolTip="Редактировать"
                                 Width="30"
                                 Height="30"
-                                Command="{Binding DeleteIncidentCommand}"
+                                Command="{Binding EditIncidentCommand}"
                                 CommandParameter="{Binding Id}"
                                 Style="{StaticResource MaterialDesignIconButton}"
                                 Background="{DynamicResource MaterialDesignTextFieldBoxBackground}">
@@ -96,7 +98,7 @@
                                 ToolTip="Посмотреть"
                                 Width="30"
                                 Height="30"
-                                Command="{Binding DeleteIncidentCommand}"
+                                Command="{Binding ReadIncidentCommand}"
                                 CommandParameter="{Binding Id}"
                                 Style="{StaticResource MaterialDesignIconButton}"
                                 Background="{DynamicResource MaterialDesignTextFieldBoxBackground}">
@@ -107,28 +109,14 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <Grid
+        <Button
             Grid.Row="3"
-            VerticalAlignment="Bottom"
-            DataContext="{Binding ErrorMessageViewModel}"
-            Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="20"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <materialDesign:PackIcon
-                Grid.Column="0"
-                Foreground="DarkRed"
-                VerticalAlignment="Center"
-                Kind="Error"
-                Width="15"
-                Height="15"/>
-            <TextBlock
-                TextWrapping="Wrap"
-                Grid.Column="1"
-                Foreground="DarkRed"
-                VerticalAlignment="Center"
-                Text="{Binding Message}"/>
-        </Grid>
+            Content="Добавить происшествие"
+            Margin="0 15 0 0"
+            Width="200"
+            HorizontalAlignment="Left"
+            Command="{Binding UpdateCurrentViewModelCommand}"
+            CommandParameter="{x:Static nav:ViewType.Create}"
+            Cursor="Hand"/>
     </Grid>
 </UserControl>

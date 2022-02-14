@@ -1,19 +1,19 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using System.Windows;
 
 using IncidentRegistrar.UI.Repositories;
-using IncidentRegistrar.UI.ViewModels;
+using IncidentRegistrar.UI.State;
 
 namespace IncidentRegistrar.UI.Commands
 {
 	public class DeleteIncidentCommand : AsyncCommandBase
 	{
-		private readonly HomeViewModel _homeViewModel;
+		private readonly IIncidentStore _incidentStore;
 		private readonly IIncidentRepository _incidentRepository;
 
-		public DeleteIncidentCommand(HomeViewModel homeViewModel, IIncidentRepository incidentRepository)
+		public DeleteIncidentCommand(IIncidentStore incidentStore, IIncidentRepository incidentRepository)
 		{
-			_homeViewModel = homeViewModel;
+			_incidentStore = incidentStore;
 			_incidentRepository = incidentRepository;
 		}
 
@@ -24,12 +24,12 @@ namespace IncidentRegistrar.UI.Commands
 				var id = int.Parse(parameter.ToString());
 				await _incidentRepository.Delete(id);
 
-				var incidentToRemove = _homeViewModel.Incidents.FirstOrDefault(incident => incident.Id == id);
-				_homeViewModel.Incidents.Remove(incidentToRemove);
+				_incidentStore.DeleteIncident(id);
+				
 			}
 			catch
 			{
-				_homeViewModel.ErrorMessage = "Не удалось удалить происшествие";
+				MessageBox.Show("Не удалось удалить происшествие");
 			}
 		}
 	}

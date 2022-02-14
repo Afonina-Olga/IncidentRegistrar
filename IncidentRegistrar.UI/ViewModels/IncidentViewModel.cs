@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Windows.Input;
+
 using IncidentRegistrar.UI.Commands;
 using IncidentRegistrar.UI.Repositories;
+using IncidentRegistrar.UI.State;
 
 namespace IncidentRegistrar.UI.ViewModels
 {
@@ -22,9 +24,9 @@ namespace IncidentRegistrar.UI.ViewModels
 
 		public ICommand DeleteIncidentCommand { get; }
 
-		public IncidentViewModel(HomeViewModel homeViewModel, IIncidentRepository incidentRepository)
+		public IncidentViewModel(IIncidentStore incidentStore, IIncidentRepository incidentRepository)
 		{
-			DeleteIncidentCommand = new DeleteIncidentCommand(homeViewModel, incidentRepository);
+			DeleteIncidentCommand = new DeleteIncidentCommand(incidentStore, incidentRepository);
 		}
 	}
 }

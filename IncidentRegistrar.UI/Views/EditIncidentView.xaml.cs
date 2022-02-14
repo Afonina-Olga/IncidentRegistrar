@@ -14,11 +14,11 @@ using System.Windows.Shapes;
 namespace IncidentRegistrar.UI.Views
 {
 	/// <summary>
-	/// Логика взаимодействия для DialogView.xaml
+	/// Логика взаимодействия для EditIncidentView.xaml
 	/// </summary>
-	public partial class DialogView : UserControl
+	public partial class EditIncidentView : UserControl
 	{
-		public DialogView()
+		public EditIncidentView()
 		{
 			InitializeComponent();
 		}

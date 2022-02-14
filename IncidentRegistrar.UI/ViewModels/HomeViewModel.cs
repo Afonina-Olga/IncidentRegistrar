@@ -1,13 +1,24 @@
-﻿using IncidentRegistrar.UI.Commands;
-using IncidentRegistrar.UI.Repositories;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
+
+using IncidentRegistrar.UI.Commands;
+using IncidentRegistrar.UI.Extentions;
+using IncidentRegistrar.UI.Models;
+using IncidentRegistrar.UI.Repositories;
+using IncidentRegistrar.UI.State;
+using IncidentRegistrar.UI.ViewModels.Factories;
 
 namespace IncidentRegistrar.UI.ViewModels
 {
 	public class HomeViewModel : ViewModelBase
 	{
-		#region AllIncidents
+		private readonly IIncidentStore _incidentStore;
+		private readonly IIncidentRepository _incidentRepository;
+
+		#region Incidents Property
 
 		private ObservableCollection<IncidentViewModel> _incidents;
 		public ObservableCollection<IncidentViewModel> Incidents
@@ -40,40 +51,65 @@ namespace IncidentRegistrar.UI.ViewModels
 
 		#endregion
 
-		public ParticipantViewModel CurrentParticipant { get; set; } = new ParticipantViewModel();
-
-		public NewIncidentViewModel NewIncident { get; }
-
 		#region Commands
 
 		public ICommand LoadIncidentsCommand { get; }
-		public ICommand AddParticipantCommand { get; }
+
+		public ICommand UpdateCurrentViewModelCommand { get; }
 
 		#endregion
 
-		#region Error
-
-		public MessageViewModel ErrorMessageViewModel { get; }
-
-		public string ErrorMessage
+		public HomeViewModel(
+			IIncidentRepository incidentRepository,
+			INavigator navigator,
+			IViewModelFactory viewModelFactory,
+			IIncidentStore incidentStore)
 		{
-			set => ErrorMessageViewModel.Message = value;
+			_incidentStore = incidentStore;
+			_incidentRepository = incidentRepository;
+
+			LoadIncidentsCommand = new LoadIncidentsCommand(this, incidentRepository, incidentStore);
+			LoadIncidentsCommand.Execute(null);
+
+			UpdateCurrentViewModelCommand = new UpdateCurrentViewModelCommand(navigator, viewModelFactory);
+
+			_incidentStore.IncidentDeleted += OnIncidentDeleted;
+			_incidentStore.IncidentAdded += OnIncidentAdded;
 		}
 
-		#endregion
-
-		public HomeViewModel(IIncidentRepository incidentRepository)
+		public override void Dispose()
 		{
-			#region ViewModels
+			_incidentStore.IncidentDeleted -= OnIncidentDeleted;
+			_incidentStore.IncidentAdded -= OnIncidentAdded;
+			base.Dispose();
+		}
 
-			ErrorMessageViewModel = new MessageViewModel();
-			NewIncident = new NewIncidentViewModel(this, incidentRepository);
+		private void OnIncidentAdded(Incident incident)
+		{
+			Incidents.Add(new IncidentViewModel(_incidentStore, _incidentRepository)
+			{
+				Id = incident.Id,
+				IncidentType = incident.IncidentType.FromIncidentType(),
+				Participants = Convert(incident.Participants),
+				RegDate = incident.RegDate,
+				ResolutionType = incident.ResolutionType.FromResolutionType()
+			});
+		}
 
-			#endregion
+		private void OnIncidentDeleted(Incident incident)
+		{
+			var incidentToRemove = Incidents.FirstOrDefault(incident => incident.Id == incident.Id);
+			Incidents.Remove(incidentToRemove);
+		}
 
-			LoadIncidentsCommand = new LoadIncidentsCommand(this, incidentRepository);
-			LoadIncidentsCommand.Execute(null);
-			AddParticipantCommand = new AddParticipantCommand(this);
+		private string Convert(List<Participant> participants)
+		{
+			var names = participants.Select(participant =>
+			{
+				return $"{participant.Person.LastName} {participant.Person.FirstName} {participant.Person.MiddleName}";
+			});
+
+			return string.Join(Environment.NewLine, names);
 		}
 	}
 }

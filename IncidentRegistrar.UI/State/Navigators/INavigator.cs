@@ -8,9 +8,9 @@ namespace IncidentRegistrar.UI.State
 	{
 		Login,
 		Home,
-		Edit,
 		Create,
 		Read,
+		Edit,
 		Summary
 	}
 
